@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>hot balllooonnn...</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: #f1f1f1;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+        }
+        canvas {
+            border: 2px solid #000;
+            border-radius: 6px;
+        }
+        .controls {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        .controls button {
+            padding: 10px;
+            margin: 0 5px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="gamewindow" width="400" height="600"></canvas>
+    <div class="controls">
+        <button style="background: red;" onclick="changeColor('red')">&#8199</button>
+        <button style="background: green;" onclick="changeColor('green')">&#8199</button>
+        <button style="background: blue;" onclick="changeColor('blue')">&#8199</button>
+        <button style="background: yellow;" onclick="changeColor('yellow')">&#8199</button>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('gamewindow');
+        const canv = canvas.getContext('2d');
+        let balloonColor = 'red';
+        let barriers = [];
+        let balloonX = canvas.width / 2;
+        let speed = 2;
+
+        function changeColor(color) {
+            balloonColor = color;
+        }
+
+        function createBarrier() {
+            const colors = ['red', 'green', 'blue', 'yellow'];
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            const width = Math.random() * 100 + 50;
+            const x = Math.random() * (canvas.width - width);
+            barriers.push({
+                x,
+                y: -50,
+                width,
+                height: 20,
+                color,
+                checkpassed: false
+            });
+        }
+
+        function update() {
+            barriers.forEach(barrier => {
+                barrier.y += speed;
+            });
+
+            barriers = barriers.filter(barrier => barrier.y - barrier.height < canvas.height);
+            for (let i = barriers.length - 1; i >= 0; i--) {
+                const barrier = barriers[i];
+                if (
+                    barrier.y + barrier.height > canvas.height - 60 &&
+                    barrier.y < canvas.height - 40 &&
+                    balloonX + 20 > barrier.x &&
+                    balloonX - 20 < barrier.x + barrier.width
+                ) {
+                    if (barrier.color !== balloonColor) {
+                        alert('Game Over!');
+                        resetGame();
+                        return;
+                    }
+                }
+            }
+        }
+
+        function resetGame() {
+            barriers = [];
+            balloonX = canvas.width / 2;
+            speed = 2;
+        }
+
+        function draw() {
+            canv.clearRect(0, 0, canvas.width, canvas.height);
+            canv.beginPath();
+            canv.arc(balloonX, canvas.height - 50, 20, 0, Math.PI * 2);
+            canv.fillStyle = balloonColor;
+            canv.fill();
+            canv.closePath();
+            barriers.forEach(barrier => {
+                canv.fillStyle = barrier.color;
+                canv.fillRect(barrier.x, barrier.y, barrier.width, barrier.height);
+            });
+        }
+
+        function gameLoop() {
+            update();
+            draw();
+            requestAnimationFrame(gameLoop);
+        }
+        setInterval(createBarrier, 2000);
+        document.addEventListener('keydown', e => {
+            if (e.key === 'ArrowLeft' && balloonX > 20) balloonX -= 30;
+            if (e.key === 'ArrowRight' && balloonX < canvas.width - 20) balloonX += 30;
+        });
+        gameLoop();
+    </script>
+</body>
+</html>
