@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>hot bln..</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: #f1f1f1;
+            overflow: hidden;
+            font-family: Arial
+        }
+        
+        canvas {
+            border: 2px solid #000;
+            border-radius: 6px
+        }
+        
+        .controls {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%)
+        }
+        
+        .controls button {
+            padding: 10px;
+            margin: 0 5px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px
+        }
+        
+        .score {
+            position: absolute;
+            top: calc(50% - 295px);
+            left: calc(50% + 110px);
+            font-size: 20px;
+            font-weight: 700
+        }
+        
+        .controls.arrs {
+            margin-bottom: 50px;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .a {
+            background: #f7bf48;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="score" id="SD">Score: 0</div>
+    <canvas id="GW" width="400" height="600"></canvas>
+    <div class="controls">
+        <div class="controls arrs"><button class="a" onclick='moveBalloon("left")'>&larr;</button>
+            <button class="a" onclick='moveBalloon("right")'>&rarr;</button></div>
+        <button style="background:red" onclick='cc("red")'>&#8199</button>
+        <button style="background:green" onclick='cc("green")'>&#8199</button>
+        <button style="background:#00f" onclick='cc("blue")'>&#8199</button>
+        <button style="background:#ff0" onclick='cc("yellow")'>&#8199</button>
+    </div>
+    <script>
+        let canvas = document.getElementById("GW"),
+            canv = canvas.getContext("2d"),
+            SD = document.getElementById("SD"),
+            balloonColor = "red",
+            barriers = [],
+            balloonX = canvas.width / 2,
+            speed = 2,
+            score = 0;
+
+        function cc(e) {
+            balloonColor = e
+        }
+
+        function CB() {
+            var e = ["red", "green", "blue", "yellow"],
+                e = e[Math.floor(Math.random() * e.length)],
+                a = 100 * Math.random() + 50,
+                o = Math.random() * (canvas.width - a);
+            barriers.push({
+                x: o,
+                y: -50,
+                width: a,
+                height: 20,
+                color: e,
+                checkpassed: !1
+            })
+        }
+
+        function update() {
+            barriers.forEach(e => {
+                e.y += speed, !e.checkpassed && e.y > canvas.height && (e.checkpassed = !0, score--, SD.textContent = "Score: " + score)
+            });
+            for (let e = (barriers = barriers.filter(e => e.y - e.height < canvas.height)).length - 1; 0 <= e; e--) {
+                var a = barriers[e];
+                if (a.y + a.height > canvas.height - 60 && a.y < canvas.height - 40 && balloonX + 20 > a.x && balloonX - 20 < a.x + a.width) {
+                    if (a.color !== balloonColor) return alert("Game Over! Your score: " + score), void rG();
+                    score++, SD.textContent = "Score: " + score, barriers.splice(e, 1)
+                }
+            }
+        }
+
+        function rG() {
+            barriers = [], balloonX = canvas.width / 2, speed = 2, score = 0, SD.textContent = "Score: " + score
+        }
+
+        function draw() {
+            canv.clearRect(0, 0, canvas.width, canvas.height), canv.beginPath(), canv.arc(balloonX, canvas.height - 50, 20, 0, 2 * Math.PI), canv.fillStyle = balloonColor, canv.fill(), canv.closePath(), barriers.forEach(e => {
+                canv.fillStyle = e.color, canv.fillRect(e.x, e.y, e.width, e.height)
+            })
+        }
+
+        function gl() {
+            update(), draw(), requestAnimationFrame(gl)
+        }
+        setInterval(CB, 2e3), document.addEventListener("keydown", e => {
+            "ArrowLeft" === e.key && 20 < balloonX && (balloonX -= 30), "ArrowRight" === e.key && balloonX < canvas.width - 20 && (balloonX += 30)
+        }), gl()
+
+        function moveBalloon(direction) {
+            if (direction === "left" && balloonX > 20) {
+                balloonX -= 30;
+            } else if (direction === "right" && balloonX < canvas.width - 20) {
+                balloonX += 30;
+            }
+        }
+    </script>
+</body>
+
+</html>
