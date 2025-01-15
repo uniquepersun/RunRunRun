@@ -32,11 +32,12 @@
             font-size: 16px;
             cursor: pointer;
             border: none;
-            border-radius: 5px;
+            border-radius: 6px;
         }
     </style>
 </head>
 <body>
+    <div class="score" id="scorewindow">Score: 0</div>
     <canvas id="gamewindow" width="400" height="600"></canvas>
     <div class="controls">
         <button style="background: red;" onclick="changeColor('red')">&#8199</button>
@@ -48,10 +49,12 @@
     <script>
         const canvas = document.getElementById('gamewindow');
         const canv = canvas.getContext('2d');
+        const scorewindow = document.getElementById('scorewindow');
         let balloonColor = 'red';
         let barriers = [];
         let balloonX = canvas.width / 2;
         let speed = 2;
+        let score = 0;
 
         function changeColor(color) {
             balloonColor = color;
@@ -75,9 +78,16 @@
         function update() {
             barriers.forEach(barrier => {
                 barrier.y += speed;
+
+                if (!barrier.checkpassed && barrier.y > canvas.height) {
+                    barrier.checkpassed = true;
+                    score--;
+                    scorewindow.textContent = `Score: ${score}`;
+                }
             });
 
             barriers = barriers.filter(barrier => barrier.y - barrier.height < canvas.height);
+
             for (let i = barriers.length - 1; i >= 0; i--) {
                 const barrier = barriers[i];
                 if (
@@ -86,11 +96,15 @@
                     balloonX + 20 > barrier.x &&
                     balloonX - 20 < barrier.x + barrier.width
                 ) {
-                    if (barrier.color !== balloonColor) {
-                        alert('Game Over!');
+                    if (barrier.color === balloonColor) {
+                        score++;
+                    } else {
+                        alert(`yr game is overrr! yr score: ${score}`);
                         resetGame();
                         return;
                     }
+                    scorewindow.textContent = `Score: ${score}`;
+                    barriers.splice(i, 1);
                 }
             }
         }
@@ -99,6 +113,8 @@
             barriers = [];
             balloonX = canvas.width / 2;
             speed = 2;
+            score = 0;
+            scorewindow.textContent = `Score: ${score}`;
         }
 
         function draw() {
