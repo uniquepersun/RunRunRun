@@ -32,12 +32,19 @@
             font-size: 16px;
             cursor: pointer;
             border: none;
-            border-radius: 6px;
+            border-radius: 5px;
+        }
+        .score {
+            position: absolute;
+            top: calc(50% - 295px);
+            left: calc(50% + 110px);
+            font-size: 20px;
+            font-weight: bold;
         }
     </style>
 </head>
 <body>
-    <div class="score" id="scorewindow">Score: 0</div>
+    <div class="score" id="scoreDisplay">Score: 0</div>
     <canvas id="gamewindow" width="400" height="600"></canvas>
     <div class="controls">
         <button style="background: red;" onclick="changeColor('red')">&#8199</button>
@@ -49,7 +56,7 @@
     <script>
         const canvas = document.getElementById('gamewindow');
         const canv = canvas.getContext('2d');
-        const scorewindow = document.getElementById('scorewindow');
+        const scoreDisplay = document.getElementById('scoreDisplay');
         let balloonColor = 'red';
         let barriers = [];
         let balloonX = canvas.width / 2;
@@ -82,7 +89,7 @@
                 if (!barrier.checkpassed && barrier.y > canvas.height) {
                     barrier.checkpassed = true;
                     score--;
-                    scorewindow.textContent = `Score: ${score}`;
+                    scoreDisplay.textContent = `Score: ${score}`;
                 }
             });
 
@@ -99,11 +106,11 @@
                     if (barrier.color === balloonColor) {
                         score++;
                     } else {
-                        alert(`yr game is overrr! yr score: ${score}`);
+                        alert(`Game Over! Your score: ${score}`);
                         resetGame();
                         return;
                     }
-                    scorewindow.textContent = `Score: ${score}`;
+                    scoreDisplay.textContent = `Score: ${score}`;
                     barriers.splice(i, 1);
                 }
             }
@@ -114,7 +121,7 @@
             balloonX = canvas.width / 2;
             speed = 2;
             score = 0;
-            scorewindow.textContent = `Score: ${score}`;
+            scoreDisplay.textContent = `Score: ${score}`;
         }
 
         function draw() {
@@ -136,6 +143,7 @@
             requestAnimationFrame(gameLoop);
         }
         setInterval(createBarrier, 2000);
+
         document.addEventListener('keydown', e => {
             if (e.key === 'ArrowLeft' && balloonX > 20) balloonX -= 30;
             if (e.key === 'ArrowRight' && balloonX < canvas.width - 20) balloonX += 30;
