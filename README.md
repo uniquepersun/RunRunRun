@@ -2,7 +2,7 @@
  what is this?? its a challenge! Yep, to make your application as smoll as possible while keeping it engaging🙆. <br>
  - But what is my application?? <br>
   its a game!<br>
-where you(player), have to match the color of the barriers falling on you to cross them w/o fearr! and you HAVE TO CROSS THEM TOUCHING, if not you lose a point.. BUTT if you do so also matching the right color you get 🍬(if you meet me in person :yayy:)
+**where you(player), have to match the color of the barriers falling on you to cross them w/o fearr! and you HAVE TO CROSS THEM TOUCHING, if not you lose a point.. BUTT if you do so also matching the right color you get 🍬(if you meet me in person :yayy:)**
 
 ---
 ANDD I dare you to star the repo 🌟, pweasse...
